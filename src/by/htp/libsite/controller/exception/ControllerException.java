@@ -1,5 +1,5 @@
 package by.htp.libsite.controller.exception;
-
+//utf-8
 public class ControllerException extends Exception {
 	private static final long serialVersionUID = 1L;
 

@@ -1,5 +1,5 @@
 package by.htp.libsite.dao.exception;
-
+//utf-8
 public class ConnectionPoolException extends Exception {
 
 	private static final long serialVersionUID = 1L;

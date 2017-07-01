@@ -1,9 +1,11 @@
 package by.htp.libsite.service.impl;
-
+//utf-8
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 final class ParameterValidator {
+	
+	private static String EMAIL_REGEXP = "^([a-z0-9_-]+\\.)*[a-z0-9_-]+@[a-z0-9_-]+(\\.[a-z0-9_-]+)*\\.[a-z]{2,6}$";
 
 	public static boolean isEmailValid(String email) {
 		if (email == null) {
@@ -11,9 +13,8 @@ final class ParameterValidator {
 		} else if (email.isEmpty()) {
 			return false;
 		}
-		String regexp = "^([a-z0-9_-]+\\.)*[a-z0-9_-]+@[a-z0-9_-]+(\\.[a-z0-9_-]+)*\\.[a-z]{2,6}$";
 
-		Pattern pattern = Pattern.compile(regexp);
+		Pattern pattern = Pattern.compile(EMAIL_REGEXP);
 		Matcher matcher = pattern.matcher(email);
 
 		return matcher.matches();

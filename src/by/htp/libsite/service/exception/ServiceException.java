@@ -1,5 +1,5 @@
 package by.htp.libsite.service.exception;
-
+//utf-8
 public class ServiceException extends Exception {
 	private static final long serialVersionUID = 1L;
 

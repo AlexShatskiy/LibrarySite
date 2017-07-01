@@ -1,5 +1,5 @@
 package by.htp.libsite.controller.command.impl;
-
+//utf-8
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -11,7 +11,7 @@ import by.htp.libsite.controller.command.Command;
 public class PasswordRecovery implements Command {
 
 	@Override
-	public void execute(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
 	}

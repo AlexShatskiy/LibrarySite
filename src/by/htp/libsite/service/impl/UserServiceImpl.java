@@ -1,5 +1,5 @@
 package by.htp.libsite.service.impl;
-
+//utf-8
 import by.htp.libsite.dao.UserDAO;
 import by.htp.libsite.dao.exception.ConnectionPoolException;
 import by.htp.libsite.dao.factory.DAOFactory;
@@ -26,7 +26,10 @@ public class UserServiceImpl implements UserService {
 		} catch (ConnectionPoolException e) {
 			throw new ServiceException("fail in UserServiceImpl", e);
 		}
+		
+		if (user == null){
+			throw new ServiceException("fail in UserServiceImpl user == null");
+		}
 		return user;
 	}
-
 }

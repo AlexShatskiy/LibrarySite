@@ -1,5 +1,5 @@
 package by.htp.libsite.dao.connection;
-
+//utf-8
 public final class ConnectionParameter {
 	private ConnectionParameter(){}
 	
