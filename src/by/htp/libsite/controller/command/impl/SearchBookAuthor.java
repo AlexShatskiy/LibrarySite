@@ -1,56 +1,47 @@
 package by.htp.libsite.controller.command.impl;
 
-//utf-8
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+
 import by.htp.libsite.controller.PageLibrary;
 import by.htp.libsite.controller.PageParameter;
 import by.htp.libsite.controller.PageSetAttribute;
-import by.htp.libsite.controller.SessionAttribute;
 import by.htp.libsite.controller.command.Command;
-import by.htp.libsite.domain.User;
+import by.htp.libsite.domain.Book;
+import by.htp.libsite.service.BookService;
 import by.htp.libsite.service.ServiceFactory;
-import by.htp.libsite.service.UserService;
 import by.htp.libsite.service.exception.ServiceException;
 import by.htp.libsite.service.exception.ServiceExceptionInvalidParameter;
 
-public class PasswordRecovery implements Command {
+public class SearchBookAuthor implements Command {
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String email;
-		String page;
-
-		email = request.getParameter(PageParameter.EMAIL);
-
+		ArrayList<Book> books = new ArrayList<>();
+		
+		String author;
+		String page = PageLibrary.INDEX;
+		
+		author = request.getParameter(PageParameter.SEARCH);
+		
 		ServiceFactory factory = ServiceFactory.getInstance();
-		UserService userService = factory.getUserService();
+		BookService bookService = factory.getBookService();
 
 		try {
+			books = bookService.getBookForAuthor(author);
+			request.setAttribute(PageSetAttribute.BOOKS, books);
 			
-			if (userService.sendPassword(email)){
-				request.setAttribute(PageSetAttribute.MESSAGE, "password send");
-				page = PageLibrary.INDEX;
-			} else if (userService.hasEmail(email)){
-				request.setAttribute(PageSetAttribute.ERROR_MESSAGE, "sorry, we will send later");
-				page = PageLibrary.INDEX;
-			} else {
-				request.setAttribute(PageSetAttribute.ERROR_MESSAGE, "There is no such email");
-				page = PageLibrary.PASSWORD_RECOVERY;
-			}
-
 		} catch (ServiceException e) {
-			page = PageLibrary.INDEX;
-			request.setAttribute(PageSetAttribute.ERROR_MESSAGE, "sorry fail");
+			
 		} catch (ServiceExceptionInvalidParameter e) {
-			page = PageLibrary.PASSWORD_RECOVERY;
 			request.setAttribute(PageSetAttribute.ERROR_MESSAGE, "Invalid Parameter");
 		}
+		
 		RequestDispatcher dispatcher = request.getRequestDispatcher(page);
 		dispatcher.forward(request, response);
 	}
