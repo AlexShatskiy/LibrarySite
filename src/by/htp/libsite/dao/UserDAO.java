@@ -1,6 +1,9 @@
 package by.htp.libsite.dao;
+import java.util.ArrayList;
+
 //utf-8
 import by.htp.libsite.dao.exception.ConnectionPoolException;
+import by.htp.libsite.domain.Book;
 import by.htp.libsite.domain.User;
 
 public interface UserDAO {
@@ -11,4 +14,5 @@ public interface UserDAO {
 	boolean hasNickname(String nickname) throws ConnectionPoolException;
 	String getPassword(String email) throws ConnectionPoolException;
 	int getUser_id(String email) throws ConnectionPoolException;
+	ArrayList<User> getAllUser() throws ConnectionPoolException;
 }

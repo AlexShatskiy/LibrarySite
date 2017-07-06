@@ -6,7 +6,6 @@ encoding//src/by/htp/libsite/controller/PageLibrary.java=UTF-8
 encoding//src/by/htp/libsite/controller/PageParameter.java=UTF-8
 encoding//src/by/htp/libsite/controller/command/Command.java=UTF-8
 encoding//src/by/htp/libsite/controller/command/impl/CheckIn.java=UTF-8
-encoding//src/by/htp/libsite/controller/command/impl/ErrorCommand.java=UTF-8
 encoding//src/by/htp/libsite/controller/command/impl/PasswordRecovery.java=UTF-8
 encoding//src/by/htp/libsite/controller/command/impl/SearchBookTitle.java=Cp1251
 encoding//src/by/htp/libsite/controller/command/impl/SignIn.java=UTF-8

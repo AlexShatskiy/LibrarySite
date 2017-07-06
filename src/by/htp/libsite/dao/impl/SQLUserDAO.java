@@ -6,12 +6,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import by.htp.libsite.dao.UserDAO;
 import by.htp.libsite.dao.connection.ConnectionPool;
 import by.htp.libsite.dao.exception.ConnectionPoolException;
 import by.htp.libsite.domain.User;
 
 public class SQLUserDAO implements UserDAO {
+	private static final Logger log = LogManager.getRootLogger();
 
 	@Override
 	public User signIn(String email, String password) throws ConnectionPoolException {
@@ -23,23 +29,23 @@ public class SQLUserDAO implements UserDAO {
 		String nicknameSQL = null;
 		String roleSQL = null;
 
-		Connection con = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
 
 		ConnectionPool pool = ConnectionPool.getInstance();
-		con = pool.takeConnection();
+		connection = pool.takeConnection();
 		try {
-			ps = con.prepareStatement(SQL);
-			ps.setString(1, email);
-			ps.setString(2, password);
-			rs = ps.executeQuery();
+			preparedStatement = connection.prepareStatement(SQL);
+			preparedStatement.setString(1, email);
+			preparedStatement.setString(2, password);
+			resultSet = preparedStatement.executeQuery();
 
-			while (rs.next()) {
-				user_idSQL = rs.getInt(1);
-				emailSQL = rs.getString(2);
-				nicknameSQL = rs.getString(3);
-				roleSQL = rs.getString(4);
+			while (resultSet.next()) {
+				user_idSQL = resultSet.getInt(1);
+				emailSQL = resultSet.getString(2);
+				nicknameSQL = resultSet.getString(3);
+				roleSQL = resultSet.getString(4);
 			}
 
 			if (emailSQL != null && nicknameSQL != null && roleSQL != null) {
@@ -49,23 +55,23 @@ public class SQLUserDAO implements UserDAO {
 		} catch (SQLException e) {
 			throw new ConnectionPoolException("SQLException in signIn", e);
 		} finally {
-			if (rs != null) {
+			if (resultSet != null) {
 				try {
-					rs.close();
+					resultSet.close();
 				} catch (SQLException e) {
 					throw new ConnectionPoolException("rs.close() in signIn", e);
 				}
 			}
-			if (ps != null) {
+			if (preparedStatement != null) {
 				try {
-					ps.close();
+					preparedStatement.close();
 				} catch (SQLException e) {
 					throw new ConnectionPoolException("st.close() in signIn", e);
 				}
 			}
-			if (con != null) {
+			if (connection != null) {
 				try {
-					con.close();
+					connection.close();
 				} catch (SQLException e) {
 					throw new ConnectionPoolException("con.close() in signIn", e);
 				}
@@ -82,21 +88,21 @@ public class SQLUserDAO implements UserDAO {
 
 		String SQL = "INSERT INTO user (email, password, nickname, role) VALUES (?, ?, ?, ?);";
 
-		Connection con = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
 
 		ConnectionPool pool = ConnectionPool.getInstance();
-		con = pool.takeConnection();
+		connection = pool.takeConnection();
 		try {
-			ps = con.prepareStatement(SQL);
+			preparedStatement = connection.prepareStatement(SQL);
 
-			ps.setString(1, email);
-			ps.setString(2, password);
-			ps.setString(3, nickname);
-			ps.setString(4, ROLE);
+			preparedStatement.setString(1, email);
+			preparedStatement.setString(2, password);
+			preparedStatement.setString(3, nickname);
+			preparedStatement.setString(4, ROLE);
 
-			ps.executeUpdate();
+			preparedStatement.executeUpdate();
 
 			user_id = getUser_id(email);
 			user = new User(user_id, email, nickname, ROLE);
@@ -106,23 +112,23 @@ public class SQLUserDAO implements UserDAO {
 		} catch (SQLException e) {
 			throw new ConnectionPoolException("SQLException in checkIn", e);
 		} finally {
-			if (rs != null) {
+			if (resultSet != null) {
 				try {
-					rs.close();
+					resultSet.close();
 				} catch (SQLException e) {
 					throw new ConnectionPoolException("rs.close() in checkIn", e);
 				}
 			}
-			if (ps != null) {
+			if (preparedStatement != null) {
 				try {
-					ps.close();
+					preparedStatement.close();
 				} catch (SQLException e) {
 					throw new ConnectionPoolException("st.close() in checkIn", e);
 				}
 			}
-			if (con != null) {
+			if (connection != null) {
 				try {
-					con.close();
+					connection.close();
 				} catch (SQLException e) {
 					throw new ConnectionPoolException("con.close() in checkIn", e);
 				}
@@ -137,27 +143,27 @@ public class SQLUserDAO implements UserDAO {
 
 		String passwordSQL = null;
 
-		Connection con = null;
+		Connection connection = null;
 		PreparedStatement ps = null;
-		ResultSet rs = null;
+		ResultSet resultSet = null;
 
 		ConnectionPool pool = ConnectionPool.getInstance();
-		con = pool.takeConnection();
+		connection = pool.takeConnection();
 		try {
-			ps = con.prepareStatement(SQL);
+			ps = connection.prepareStatement(SQL);
 			ps.setString(1, email);
-			rs = ps.executeQuery();
+			resultSet = ps.executeQuery();
 
-			while (rs.next()) {
-				passwordSQL = rs.getString(1);
+			while (resultSet.next()) {
+				passwordSQL = resultSet.getString(1);
 			}
 
 		} catch (SQLException e) {
 			throw new ConnectionPoolException("SQLException in getPassword", e);
 		} finally {
-			if (rs != null) {
+			if (resultSet != null) {
 				try {
-					rs.close();
+					resultSet.close();
 				} catch (SQLException e) {
 					throw new ConnectionPoolException("rs.close() in getPassword", e);
 				}
@@ -169,9 +175,9 @@ public class SQLUserDAO implements UserDAO {
 					throw new ConnectionPoolException("st.close() in getPassword", e);
 				}
 			}
-			if (con != null) {
+			if (connection != null) {
 				try {
-					con.close();
+					connection.close();
 				} catch (SQLException e) {
 					throw new ConnectionPoolException("con.close() in getPassword", e);
 				}
@@ -186,41 +192,41 @@ public class SQLUserDAO implements UserDAO {
 
 		boolean isHasEmail = false;
 
-		Connection con = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
 
 		ConnectionPool pool = ConnectionPool.getInstance();
-		con = pool.takeConnection();
+		connection = pool.takeConnection();
 		try {
-			ps = con.prepareStatement(SQL);
-			ps.setString(1, email);
-			rs = ps.executeQuery();
+			preparedStatement = connection.prepareStatement(SQL);
+			preparedStatement.setString(1, email);
+			resultSet = preparedStatement.executeQuery();
 
-			if (rs.next()) {
+			if (resultSet.next()) {
 				isHasEmail = true;
 			}
 
 		} catch (SQLException e) {
 			throw new ConnectionPoolException("SQLException in hasEmail", e);
 		} finally {
-			if (rs != null) {
+			if (resultSet != null) {
 				try {
-					rs.close();
+					resultSet.close();
 				} catch (SQLException e) {
 					throw new ConnectionPoolException("rs.close() in hasEmail", e);
 				}
 			}
-			if (ps != null) {
+			if (preparedStatement != null) {
 				try {
-					ps.close();
+					preparedStatement.close();
 				} catch (SQLException e) {
 					throw new ConnectionPoolException("st.close() in hasEmail", e);
 				}
 			}
-			if (con != null) {
+			if (connection != null) {
 				try {
-					con.close();
+					connection.close();
 				} catch (SQLException e) {
 					throw new ConnectionPoolException("con.close() in hasEmail", e);
 				}
@@ -235,41 +241,41 @@ public class SQLUserDAO implements UserDAO {
 
 		boolean isHasNickname = false;
 
-		Connection con = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
 
 		ConnectionPool pool = ConnectionPool.getInstance();
-		con = pool.takeConnection();
+		connection = pool.takeConnection();
 		try {
-			ps = con.prepareStatement(SQL);
-			ps.setString(1, nickname);
-			rs = ps.executeQuery();
+			preparedStatement = connection.prepareStatement(SQL);
+			preparedStatement.setString(1, nickname);
+			resultSet = preparedStatement.executeQuery();
 
-			if (rs.next()) {
+			if (resultSet.next()) {
 				isHasNickname = true;
 			}
 
 		} catch (SQLException e) {
 			throw new ConnectionPoolException("SQLException in hasNickname", e);
 		} finally {
-			if (rs != null) {
+			if (resultSet != null) {
 				try {
-					rs.close();
+					resultSet.close();
 				} catch (SQLException e) {
 					throw new ConnectionPoolException("rs.close() in hasNickname", e);
 				}
 			}
-			if (ps != null) {
+			if (preparedStatement != null) {
 				try {
-					ps.close();
+					preparedStatement.close();
 				} catch (SQLException e) {
 					throw new ConnectionPoolException("st.close() in hasNickname", e);
 				}
 			}
-			if (con != null) {
+			if (connection != null) {
 				try {
-					con.close();
+					connection.close();
 				} catch (SQLException e) {
 					throw new ConnectionPoolException("con.close() in hasNickname", e);
 				}
@@ -284,46 +290,103 @@ public class SQLUserDAO implements UserDAO {
 
 		int user_idSQL = 0;
 
-		Connection con = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
 
 		ConnectionPool pool = ConnectionPool.getInstance();
-		con = pool.takeConnection();
+		connection = pool.takeConnection();
 		try {
-			ps = con.prepareStatement(SQL);
-			ps.setString(1, email);
-			rs = ps.executeQuery();
+			preparedStatement = connection.prepareStatement(SQL);
+			preparedStatement.setString(1, email);
+			resultSet = preparedStatement.executeQuery();
 
-			while (rs.next()) {
-				user_idSQL = rs.getInt(1);
+			while (resultSet.next()) {
+				user_idSQL = resultSet.getInt(1);
 			}
 
 		} catch (SQLException e) {
 			throw new ConnectionPoolException("SQLException in getUser_id", e);
 		} finally {
-			if (rs != null) {
+			if (resultSet != null) {
 				try {
-					rs.close();
+					resultSet.close();
 				} catch (SQLException e) {
 					throw new ConnectionPoolException("rs.close() in getUser_id", e);
 				}
 			}
-			if (ps != null) {
+			if (preparedStatement != null) {
 				try {
-					ps.close();
+					preparedStatement.close();
 				} catch (SQLException e) {
 					throw new ConnectionPoolException("st.close() in getUser_id", e);
 				}
 			}
-			if (con != null) {
+			if (connection != null) {
 				try {
-					con.close();
+					connection.close();
 				} catch (SQLException e) {
 					throw new ConnectionPoolException("con.close() in getUser_id", e);
 				}
 			}
 		}
 		return user_idSQL;
+	}
+
+	@Override
+	public ArrayList<User> getAllUser() throws ConnectionPoolException {
+		String SQL = "SELECT user_id, email, nickname, role FROM user";
+
+		int user_id;
+		String email;
+		String nickname;
+		String role;
+
+		ArrayList<User> users = new ArrayList<>();
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+
+		ConnectionPool pool = ConnectionPool.getInstance();
+		connection = pool.takeConnection();
+		try {
+			preparedStatement = connection.prepareStatement(SQL);
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				user_id = resultSet.getInt(1);
+				email = resultSet.getString(2);
+				nickname = resultSet.getString(3);
+				role = resultSet.getString(4);
+
+				User user = new User(user_id, email, nickname, role);
+				users.add(user);
+			}
+		} catch (SQLException e) {
+			throw new ConnectionPoolException("SQLException in getUser_id", e);
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (SQLException e) {
+					throw new ConnectionPoolException("rs.close() in getUser_id", e);
+				}
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (SQLException e) {
+					throw new ConnectionPoolException("st.close() in getUser_id", e);
+				}
+			}
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					throw new ConnectionPoolException("con.close() in getUser_id", e);
+				}
+			}
+		}
+		return users;
 	}
 }

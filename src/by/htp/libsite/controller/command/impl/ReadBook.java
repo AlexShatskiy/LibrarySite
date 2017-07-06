@@ -21,11 +21,12 @@ import by.htp.libsite.service.exception.ServiceException;
 import by.htp.libsite.service.exception.ServiceExceptionInvalidParameter;
 
 public class ReadBook implements Command {
+	private static final String ADMIN_ROLE = "ADMIN";
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String ADMIN_ROLE = "ADMIN";
-		Integer user_id;
+		Integer user_idBook;
+		Integer user_idSession;
 		String role;
 
 		String title;
@@ -37,10 +38,10 @@ public class ReadBook implements Command {
 		String page;
 
 		HttpSession session = request.getSession(true);
-		user_id = (Integer) session.getAttribute(SessionAttribute.USER_ID);
+		user_idSession = (Integer) session.getAttribute(SessionAttribute.USER_ID);
 		role = (String) session.getAttribute(SessionAttribute.ROLE);
 
-		if (user_id == null || role == null) {
+		if (user_idSession == null || role == null) {
 			page = PageLibrary.INDEX;
 			request.setAttribute(PageSetAttribute.ERROR_MESSAGE, "Please log in");
 		} else {
@@ -51,12 +52,13 @@ public class ReadBook implements Command {
 				page = PageLibrary.USER_PROFILE;
 			}
 
+			user_idBook = Integer.parseInt(request.getParameter(PageParameter.USER_ID));
 			title = request.getParameter(PageParameter.TITLE);
 			author = request.getParameter(PageParameter.AUTHOR);
 			content = request.getParameter(PageParameter.CONTENT);
 			genre = request.getParameter(PageParameter.GENRE);
 
-			book = new Book(title, author, content, genre);
+			book = new Book(user_idBook, title, author, content, genre);
 			request.setAttribute(PageSetAttribute.BOOK, book);
 		}
 		RequestDispatcher dispatcher = request.getRequestDispatcher(page);

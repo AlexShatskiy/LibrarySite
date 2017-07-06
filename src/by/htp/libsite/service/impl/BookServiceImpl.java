@@ -2,6 +2,9 @@ package by.htp.libsite.service.impl;
 
 import java.util.ArrayList;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import by.htp.libsite.dao.BookDAO;
 import by.htp.libsite.dao.exception.ConnectionPoolException;
 import by.htp.libsite.dao.factory.DAOFactory;
@@ -11,6 +14,7 @@ import by.htp.libsite.service.exception.ServiceException;
 import by.htp.libsite.service.exception.ServiceExceptionInvalidParameter;
 
 public class BookServiceImpl implements BookService {
+	private static final Logger log = LogManager.getRootLogger();
 
 	@Override
 	public Book addBook(Integer user_id, String title, String author, String content, String genre)
@@ -23,13 +27,13 @@ public class BookServiceImpl implements BookService {
 				|| !ParameterValidator.isBookTextValid(genre)) {
 			throw new ServiceExceptionInvalidParameter("Not valid parameters in BookServiceImpl");
 		}
-		book = new Book(title, author, content, genre);
+		book = new Book(user_id, title, author, content, genre);
 
 		DAOFactory factory = DAOFactory.getInstance();
 		BookDAO bookDAO = factory.getBookDAO();
 
 		try {
-			resultBook = bookDAO.addBook(user_id, book);
+			resultBook = bookDAO.addBook(book);
 		} catch (ConnectionPoolException e) {
 			throw new ServiceException("fail in BookServiceImpl", e);
 		}
@@ -47,13 +51,13 @@ public class BookServiceImpl implements BookService {
 				|| !ParameterValidator.isBookTextValid(genre)) {
 			throw new ServiceExceptionInvalidParameter("Not valid parameters in BookServiceImpl");
 		}
-		book = new Book(title, author, content, genre);
+		book = new Book(user_id, title, author, content, genre);
 
 		DAOFactory factory = DAOFactory.getInstance();
 		BookDAO bookDAO = factory.getBookDAO();
 
 		try {
-			resultBook = bookDAO.deleteBook(user_id, book);
+			resultBook = bookDAO.deleteBook(book);
 		} catch (ConnectionPoolException e) {
 			throw new ServiceException("fail in BookServiceImpl", e);
 		}
@@ -118,21 +122,6 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	public ArrayList<Book> getAllBook() throws ServiceException {
-		ArrayList<Book> books = new ArrayList<>();
-
-		DAOFactory factory = DAOFactory.getInstance();
-		BookDAO bookDAO = factory.getBookDAO();
-
-		try {
-			books = bookDAO.getAllBook();
-		} catch (ConnectionPoolException e) {
-			throw new ServiceException("fail in BookServiceImpl", e);
-		}
-		return books;
-	}
-
-	@Override
 	public Book changeBookContent(Integer user_id, String title, String author, String content, String genre,
 			String newContent) throws ServiceException, ServiceExceptionInvalidParameter {
 		Book book = null;
@@ -143,13 +132,13 @@ public class BookServiceImpl implements BookService {
 				|| !ParameterValidator.isBookTextValid(genre)|| !ParameterValidator.isBookTextValid(newContent)) {
 			throw new ServiceExceptionInvalidParameter("Not valid parameters in BookServiceImpl");
 		}
-		book = new Book(title, author, content, genre);
+		book = new Book(user_id, title, author, content, genre);
 
 		DAOFactory factory = DAOFactory.getInstance();
 		BookDAO bookDAO = factory.getBookDAO();
 
 		try {
-			resultBook = bookDAO.changeBookContent(user_id, book, newContent);
+			resultBook = bookDAO.changeBookContent(book, newContent);
 		} catch (ConnectionPoolException e) {
 			throw new ServiceException("fail in BookServiceImpl", e);
 		}

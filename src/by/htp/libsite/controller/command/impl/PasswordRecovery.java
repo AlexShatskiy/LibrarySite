@@ -8,6 +8,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import by.htp.libsite.controller.PageLibrary;
 import by.htp.libsite.controller.PageParameter;
 import by.htp.libsite.controller.PageSetAttribute;
@@ -20,6 +24,7 @@ import by.htp.libsite.service.exception.ServiceException;
 import by.htp.libsite.service.exception.ServiceExceptionInvalidParameter;
 
 public class PasswordRecovery implements Command {
+	private static final Logger log = LogManager.getRootLogger();
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -45,9 +50,11 @@ public class PasswordRecovery implements Command {
 			}
 
 		} catch (ServiceException e) {
+			log.error("ServiceException in PasswordRecovery");
 			page = PageLibrary.INDEX;
 			request.setAttribute(PageSetAttribute.ERROR_MESSAGE, "sorry fail");
 		} catch (ServiceExceptionInvalidParameter e) {
+			log.error("ServiceExceptionInvalidParameter in PasswordRecovery");
 			page = PageLibrary.PASSWORD_RECOVERY;
 			request.setAttribute(PageSetAttribute.ERROR_MESSAGE, "Invalid Parameter");
 		}

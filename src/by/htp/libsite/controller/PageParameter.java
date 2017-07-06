@@ -11,6 +11,8 @@ public final class PageParameter {
 	public static final String TITLE = "title";
 	public static final String AUTHOR = "author";
 	public static final String CONTENT = "content";
-	public static final String GENRE = "genre";
 	
+	public static final String GENRE = "genre";
+	public static final String NEW_CONTENT = "new_content";
+	public static final String USER_ID = "user_id";
 }

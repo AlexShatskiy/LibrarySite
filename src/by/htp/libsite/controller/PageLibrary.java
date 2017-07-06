@@ -7,4 +7,6 @@ public final class PageLibrary {
 	public static final String ADMIN_PROFILE = "WEB-INF/jsp/admin_profile.jsp";
 	public static final String REGISTRATION = "WEB-INF/jsp/registration.jsp";
 	public static final String PASSWORD_RECOVERY = "WEB-INF/jsp/password_recovery.jsp";
+	public static final String ADDING_BOOK = "WEB-INF/jsp/adding_book.jsp";
+	public static final String ERROR = "WEB-INF/jsp/error.jsp";
 }

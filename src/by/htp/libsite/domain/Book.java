@@ -2,6 +2,7 @@ package by.htp.libsite.domain;
 
 public class Book {
 	
+	private int user_id;
 	private String title;
 	private String author;
 	private String content;
@@ -9,18 +10,28 @@ public class Book {
 	
 	public Book() {
 		super();
+		this.user_id = 0;
 		this.title = "Unknown title";
 		this.author = "Unknown author";
 		this.content = "Unknown content";
 		this.genre = "Unknown genre";
 	}
 
-	public Book(String title, String author, String content, String genre) {
+	public Book(int user_id, String title, String author, String content, String genre) {
 		super();
+		this.user_id = user_id;
 		this.title = title;
 		this.author = author;
 		this.content = content;
 		this.genre = genre;
+	}
+
+	public int getUser_id() {
+		return user_id;
+	}
+
+	public void setUser_id(int user_id) {
+		this.user_id = user_id;
 	}
 
 	public String getTitle() {
@@ -63,6 +74,7 @@ public class Book {
 		result = prime * result + ((content == null) ? 0 : content.hashCode());
 		result = prime * result + ((genre == null) ? 0 : genre.hashCode());
 		result = prime * result + ((title == null) ? 0 : title.hashCode());
+		result = prime * result + user_id;
 		return result;
 	}
 
@@ -95,12 +107,14 @@ public class Book {
 				return false;
 		} else if (!title.equals(other.title))
 			return false;
+		if (user_id != other.user_id)
+			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "Book [ title=" + title + ", author=" + author + ", content=" + content
+		return "Book [user_id=" + user_id + ", title=" + title + ", author=" + author + ", content=" + content
 				+ ", genre=" + genre + "]";
 	}
 }

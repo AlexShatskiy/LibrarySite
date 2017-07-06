@@ -7,6 +7,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import by.htp.libsite.controller.command.Command;
 import by.htp.libsite.controller.exception.ControllerException;
 import by.htp.libsite.controller.exception.InitDestroyException;
@@ -15,6 +18,7 @@ import by.htp.libsite.dao.exception.ConnectionPoolException;
 
 public class Controller extends HttpServlet {
 
+	private static final Logger log = LogManager.getRootLogger();
 	private static final CommandProvider provider = new CommandProvider();
 
 	@Override
@@ -22,7 +26,6 @@ public class Controller extends HttpServlet {
 		String commandName = request.getParameter(PageParameter.COMMAND);
 
 		Command command = provider.getCommand(commandName);
-
 		command.execute(request, response);
 	}
 
@@ -31,7 +34,6 @@ public class Controller extends HttpServlet {
 		String commandName = request.getParameter(PageParameter.COMMAND);
 
 		Command command = provider.getCommand(commandName);
-
 		command.execute(request, response);
 	}
 
@@ -41,7 +43,8 @@ public class Controller extends HttpServlet {
 		try {
 			connectionPool.destroyConnectionPool();
 		} catch (ConnectionPoolException e) {
-			throw new InitDestroyException("fail in destroy()");
+			log.error("fail in destroy()");
+			throw new InitDestroyException("fail in destroy()");	
 		}
 	}
 
@@ -51,6 +54,7 @@ public class Controller extends HttpServlet {
 		try {
 			connectionPool.initPoolData();
 		} catch (ConnectionPoolException e) {
+			log.error("fail in init()");
 			throw new InitDestroyException("fail in init()");
 		}
 	}

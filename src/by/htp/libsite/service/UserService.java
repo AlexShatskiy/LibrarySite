@@ -1,5 +1,8 @@
 package by.htp.libsite.service;
 
+import java.util.ArrayList;
+
+import by.htp.libsite.dao.exception.ConnectionPoolException;
 //utf-8
 import by.htp.libsite.domain.User;
 import by.htp.libsite.service.exception.ServiceException;
@@ -12,4 +15,5 @@ public interface UserService {
 	boolean hasNickname(String nickname) throws ServiceException, ServiceExceptionInvalidParameter;
 	boolean sendPassword(String email) throws ServiceException, ServiceExceptionInvalidParameter;
 	int getUser_id(String email) throws ServiceException, ServiceExceptionInvalidParameter;
+	ArrayList<User> getAllUser() throws ServiceException;
 }

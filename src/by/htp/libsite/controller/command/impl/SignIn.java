@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import by.htp.libsite.domain.User;
 import by.htp.libsite.controller.PageLibrary;
 import by.htp.libsite.controller.PageParameter;
@@ -21,10 +24,11 @@ import by.htp.libsite.service.exception.ServiceException;
 import by.htp.libsite.service.exception.ServiceExceptionInvalidParameter;
 
 public class SignIn implements Command {
+	private static final Logger log = LogManager.getRootLogger();
+	private static final String ADMIN_ROLE = "ADMIN";
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String ADMIN_ROLE = "ADMIN";
 
 		String email;
 		String password;
@@ -54,6 +58,7 @@ public class SignIn implements Command {
 				HttpSession session = request.getSession(true);
 				session.setAttribute(SessionAttribute.USER_ID, user.getUser_id());
 				session.setAttribute(SessionAttribute.ROLE, user.getRole());
+				session.setAttribute(SessionAttribute.NICKNAME, user.getNickname());
 
 				if (ADMIN_ROLE.equals(user.getRole())) {
 					page = PageLibrary.ADMIN_PROFILE;

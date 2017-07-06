@@ -22,9 +22,13 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import by.htp.libsite.dao.exception.ConnectionPoolException;
 
 public final class ConnectionPool {
+	private static final Logger log = LogManager.getRootLogger();
 	private final static ConnectionPool instance = new ConnectionPool();
 
 	private BlockingQueue<Connection> connectionQueue;

@@ -1,5 +1,10 @@
 package by.htp.libsite.service.impl;
 
+import java.util.ArrayList;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 //utf-8
 import by.htp.libsite.dao.UserDAO;
 import by.htp.libsite.dao.exception.ConnectionPoolException;
@@ -10,6 +15,7 @@ import by.htp.libsite.service.exception.ServiceException;
 import by.htp.libsite.service.exception.ServiceExceptionInvalidParameter;
 
 public class UserServiceImpl implements UserService {
+	private static final Logger log = LogManager.getRootLogger();
 
 	@Override
 	public User signIn(String email, String password) throws ServiceException, ServiceExceptionInvalidParameter {
@@ -121,5 +127,20 @@ public class UserServiceImpl implements UserService {
 			throw new ServiceException("fail in UserServiceImpl", e);
 		}
 		return user_id;
+	}
+
+	@Override
+	public ArrayList<User> getAllUser() throws ServiceException {
+		ArrayList<User> users = new ArrayList<>();
+		
+		DAOFactory factory = DAOFactory.getInstance();
+		UserDAO userDAO = factory.getUserDAO();
+
+		try {
+			users = userDAO.getAllUser();
+		} catch (ConnectionPoolException e) {
+			throw new ServiceException("fail in UserServiceImpl", e);
+		}
+		return users;
 	}
 }
