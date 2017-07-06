@@ -19,11 +19,16 @@ import by.htp.libsite.domain.User;
 
 public class SQLBookDAO implements BookDAO {
 	private static final Logger log = LogManager.getRootLogger();
-
+	
+	private static final String ADD_BOOK = "INSERT INTO book (user_id, title, author, content, genre, status) VALUES (?, ?, ?, ?, ?, ?);";
+	private static final String GET_BOOK_FOR_TITLE = "SELECT user_id, title, author, content, genre FROM book WHERE title = ? and status = 'ADDED'";
+	private static final String GET_BOOK_FOR_AUTHOR = "SELECT user_id, title, author, content, genre FROM book WHERE author = ? and status = 'ADDED'"; 
+	private static final String GET_BOOK_FOR_GENRE = "SELECT user_id, title, author, content, genre FROM book WHERE genre = ? and status = 'ADDED'"; 
+	private static final String GET_BOOK_FOR_USER_ID = "SELECT title, author, content, genre FROM book WHERE user_id = ? and status = 'ADDED'"; 
+	
 	@Override
 	public Book addBook(Book book) throws ConnectionPoolException {
 
-		String SQL = "INSERT INTO book (user_id, title, author, content, genre, status) VALUES (?, ?, ?, ?, ?, ?);";
 		int BOOK_DELETED = 1;
 		int result = 0;
 
@@ -43,7 +48,7 @@ public class SQLBookDAO implements BookDAO {
 		connection = pool.takeConnection();
 
 		try {
-			preparedStatement = connection.prepareStatement(SQL);
+			preparedStatement = connection.prepareStatement(ADD_BOOK);
 
 			preparedStatement.setInt(1, user_id);
 			preparedStatement.setString(2, title);
@@ -101,7 +106,7 @@ public class SQLBookDAO implements BookDAO {
 		String content = book.getContent();
 		String genre = book.getGenre();
 
-		String SQL = "update book set status = 'REMUVED' where user_id = " + user_id + " and title = '" + title
+		String forDelete = "update book set status = 'REMUVED' where user_id = " + user_id + " and title = '" + title
 				+ "' and author = '" + author + "' and content = '" + content + "' and genre = '" + genre + "'";
 		Connection connection = null;
 		Statement statement = null;
@@ -112,7 +117,7 @@ public class SQLBookDAO implements BookDAO {
 
 		try {
 			statement = connection.createStatement();
-			result = statement.executeUpdate(SQL);
+			result = statement.executeUpdate(forDelete);
 			if (result == BOOK_DELETED) {
 				book = new Book(user_id, title, author, content, genre);
 			} else {
@@ -151,7 +156,6 @@ public class SQLBookDAO implements BookDAO {
 
 	@Override
 	public ArrayList<Book> getBookForTitle(String title) throws ConnectionPoolException {
-		String SQL = "SELECT user_id, title, author, content, genre FROM book WHERE title = ? and status = 'ADDED'";
 
 		ArrayList<Book> books = new ArrayList<Book>();
 
@@ -169,7 +173,7 @@ public class SQLBookDAO implements BookDAO {
 		connection = pool.takeConnection();
 
 		try {
-			preparedStatement = connection.prepareStatement(SQL);
+			preparedStatement = connection.prepareStatement(GET_BOOK_FOR_TITLE);
 			preparedStatement.setString(1, title);
 			resultSet = preparedStatement.executeQuery();
 
@@ -212,7 +216,6 @@ public class SQLBookDAO implements BookDAO {
 
 	@Override
 	public ArrayList<Book> getBookForAuthor(String author) throws ConnectionPoolException {
-		String SQL = "SELECT user_id, title, author, content, genre FROM book WHERE author = ? and status = 'ADDED'";
 
 		ArrayList<Book> books = new ArrayList<Book>();
 
@@ -230,7 +233,7 @@ public class SQLBookDAO implements BookDAO {
 		connection = pool.takeConnection();
 
 		try {
-			preparedStatement = connection.prepareStatement(SQL);
+			preparedStatement = connection.prepareStatement(GET_BOOK_FOR_AUTHOR);
 			preparedStatement.setString(1, author);
 			resultSet = preparedStatement.executeQuery();
 
@@ -283,7 +286,7 @@ public class SQLBookDAO implements BookDAO {
 		String content = book.getContent();
 		String genre = book.getGenre();
 
-		String SQL = "update book set content = '" + newContent + "' where user_id = " + user_id + " and title = '"
+		String updateSQL = "update book set content = '" + newContent + "' where user_id = " + user_id + " and title = '"
 				+ title + "' and author = '" + author + "' and content = '" + content + "' and genre = '" + genre + "'";
 
 		Connection connection = null;
@@ -295,7 +298,7 @@ public class SQLBookDAO implements BookDAO {
 
 		try {
 			statement = connection.createStatement();
-			result = statement.executeUpdate(SQL);
+			result = statement.executeUpdate(updateSQL);
 			if (result == BOOK_CHANGED) {
 				book = new Book(user_id, title, author, content, genre);
 			} else {
@@ -334,7 +337,6 @@ public class SQLBookDAO implements BookDAO {
 
 	@Override
 	public ArrayList<Book> getBookForGenre(String genre) throws ConnectionPoolException {
-		String SQL = "SELECT user_id, title, author, content, genre FROM book WHERE genre = ? and status = 'ADDED'";
 
 		ArrayList<Book> books = new ArrayList<Book>();
 
@@ -352,7 +354,7 @@ public class SQLBookDAO implements BookDAO {
 		connection = pool.takeConnection();
 
 		try {
-			preparedStatement = connection.prepareStatement(SQL);
+			preparedStatement = connection.prepareStatement(GET_BOOK_FOR_GENRE);
 			preparedStatement.setString(1, genre);
 			resultSet = preparedStatement.executeQuery();
 
@@ -395,7 +397,6 @@ public class SQLBookDAO implements BookDAO {
 
 	@Override
 	public ArrayList<Book> getBookForUser_id(int user_id) throws ConnectionPoolException {
-		String SQL = "SELECT title, author, content, genre FROM book WHERE user_id = ? and status = 'ADDED'";
 
 		ArrayList<Book> books = new ArrayList<Book>();
 
@@ -412,7 +413,7 @@ public class SQLBookDAO implements BookDAO {
 		connection = pool.takeConnection();
 
 		try {
-			preparedStatement = connection.prepareStatement(SQL);
+			preparedStatement = connection.prepareStatement(GET_BOOK_FOR_USER_ID);
 			preparedStatement.setInt(1, user_id);
 			resultSet = preparedStatement.executeQuery();
 

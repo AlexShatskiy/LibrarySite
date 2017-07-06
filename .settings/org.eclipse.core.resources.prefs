@@ -25,4 +25,7 @@ encoding//src/by/htp/libsite/service/UserService.java=UTF-8
 encoding//src/by/htp/libsite/service/exception/ServiceException.java=UTF-8
 encoding//src/by/htp/libsite/service/impl/ParameterValidator.java=UTF-8
 encoding//src/by/htp/libsite/service/impl/UserServiceImpl.java=UTF-8
+encoding//src/localization/local.properties=UTF-8
+encoding//src/localization/local_en.properties=UTF-8
+encoding//src/localization/local_ru.properties=UTF-8
 encoding/<project>=UTF-8

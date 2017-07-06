@@ -40,7 +40,7 @@ public class SearchBookUserId implements Command {
 		
 		if (ADMIN_ROLE.equals(role)) {
 			page = PageLibrary.ADMIN_PROFILE;
-			user_id = (Integer) session.getAttribute(SessionAttribute.USER_ID);
+			user_id = Integer.parseInt(request.getParameter(PageParameter.USER_ID));
 		} else {
 			page = PageLibrary.USER_PROFILE;
 			user_id = (Integer) session.getAttribute(SessionAttribute.USER_ID);

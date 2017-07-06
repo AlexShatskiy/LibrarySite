@@ -164,19 +164,19 @@
 								        <td>${book.getTitle()}</td> 
 								        <td>${book.getAuthor()}</td> 
 								        <td>${book.getGenre()}</td> 
-								        <td>
-									        <form method="get" action="Controller">
-										 	    <input type="hidden" name="command" value="read_book" /> 
-										 	    <input type="hidden" name="user_id" value="${book.getUser_id()}" /> 
-										 	    <input type="hidden" name="title" value="${book.getTitle()}" /> 
-										 	    <input type="hidden" name="author" value="${book.getAuthor()}" /> 
-										 	    <input type="hidden" name="content" value="${book.getContent()}" /> 
-										 	    <input type="hidden" name="genre" value="${book.getGenre()}" /> 
-										 	    <button type="submit" class="btn btn-info">
-													ЧИТАТЬ
-												</button>
-									        </form>
-								        </td> 
+							        <td>
+								        <form method="get" action="Controller">
+									 	    <input type="hidden" name="command" value="read_book" /> 
+									 	    <input type="hidden" name="user_id" value="${book.getUser_id()}" /> 
+									 	    <input type="hidden" name="title" value="${book.getTitle()}" /> 
+									 	    <input type="hidden" name="author" value="${book.getAuthor()}" /> 
+									 	    <input type="hidden" name="content" value="${book.getContent()}" /> 
+									 	    <input type="hidden" name="genre" value="${book.getGenre()}" /> 
+									 	    <button type="submit" class="btn btn-info">
+												ЧИТАТЬ
+											</button>
+								        </form>
+							        </td> 
 							        </tr>
 							    </c:forEach>
 						</table>

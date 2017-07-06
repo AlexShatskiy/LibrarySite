@@ -18,11 +18,18 @@ import by.htp.libsite.domain.User;
 
 public class SQLUserDAO implements UserDAO {
 	private static final Logger log = LogManager.getRootLogger();
-
+	
+	private static final String SIGN_IN = "SELECT user_id, email, nickname, role FROM user WHERE email = ? AND password = ?"; 
+	private static final String CHECK_IN = "INSERT INTO user (email, password, nickname, role) VALUES (?, ?, ?, ?);"; 
+	private static final String GET_PASSWORD = "SELECT password FROM user WHERE email = ?"; 
+	private static final String HAS_EMAIL = "SELECT user_id FROM user WHERE email = ?"; 
+	private static final String HAS_NICKNAME = "SELECT user_id FROM user WHERE nickname = ?"; 
+	private static final String GET_USER_ID = "SELECT user_id FROM user WHERE email = ?";
+	private static final String GET_ALL_USER = "SELECT user_id, email, nickname, role FROM user";
+	
 	@Override
 	public User signIn(String email, String password) throws ConnectionPoolException {
 		User user = null;
-		String SQL = "SELECT user_id, email, nickname, role FROM user WHERE email = ? AND password = ?";
 
 		int user_idSQL = 0;
 		String emailSQL = null;
@@ -36,7 +43,7 @@ public class SQLUserDAO implements UserDAO {
 		ConnectionPool pool = ConnectionPool.getInstance();
 		connection = pool.takeConnection();
 		try {
-			preparedStatement = connection.prepareStatement(SQL);
+			preparedStatement = connection.prepareStatement(SIGN_IN);
 			preparedStatement.setString(1, email);
 			preparedStatement.setString(2, password);
 			resultSet = preparedStatement.executeQuery();
@@ -86,8 +93,6 @@ public class SQLUserDAO implements UserDAO {
 		final String ROLE = "user";
 		int user_id = 0;
 
-		String SQL = "INSERT INTO user (email, password, nickname, role) VALUES (?, ?, ?, ?);";
-
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -95,7 +100,7 @@ public class SQLUserDAO implements UserDAO {
 		ConnectionPool pool = ConnectionPool.getInstance();
 		connection = pool.takeConnection();
 		try {
-			preparedStatement = connection.prepareStatement(SQL);
+			preparedStatement = connection.prepareStatement(CHECK_IN);
 
 			preparedStatement.setString(1, email);
 			preparedStatement.setString(2, password);
@@ -139,7 +144,6 @@ public class SQLUserDAO implements UserDAO {
 
 	@Override
 	public String getPassword(String email) throws ConnectionPoolException {
-		String SQL = "SELECT password FROM user WHERE email = ?";
 
 		String passwordSQL = null;
 
@@ -150,7 +154,7 @@ public class SQLUserDAO implements UserDAO {
 		ConnectionPool pool = ConnectionPool.getInstance();
 		connection = pool.takeConnection();
 		try {
-			ps = connection.prepareStatement(SQL);
+			ps = connection.prepareStatement(GET_PASSWORD);
 			ps.setString(1, email);
 			resultSet = ps.executeQuery();
 
@@ -188,7 +192,6 @@ public class SQLUserDAO implements UserDAO {
 
 	@Override
 	public boolean hasEmail(String email) throws ConnectionPoolException {
-		String SQL = "SELECT user_id FROM user WHERE email = ?";
 
 		boolean isHasEmail = false;
 
@@ -199,7 +202,7 @@ public class SQLUserDAO implements UserDAO {
 		ConnectionPool pool = ConnectionPool.getInstance();
 		connection = pool.takeConnection();
 		try {
-			preparedStatement = connection.prepareStatement(SQL);
+			preparedStatement = connection.prepareStatement(HAS_EMAIL);
 			preparedStatement.setString(1, email);
 			resultSet = preparedStatement.executeQuery();
 
@@ -237,7 +240,6 @@ public class SQLUserDAO implements UserDAO {
 
 	@Override
 	public boolean hasNickname(String nickname) throws ConnectionPoolException {
-		String SQL = "SELECT user_id FROM user WHERE nickname = ?";
 
 		boolean isHasNickname = false;
 
@@ -248,7 +250,7 @@ public class SQLUserDAO implements UserDAO {
 		ConnectionPool pool = ConnectionPool.getInstance();
 		connection = pool.takeConnection();
 		try {
-			preparedStatement = connection.prepareStatement(SQL);
+			preparedStatement = connection.prepareStatement(HAS_NICKNAME);
 			preparedStatement.setString(1, nickname);
 			resultSet = preparedStatement.executeQuery();
 
@@ -286,7 +288,6 @@ public class SQLUserDAO implements UserDAO {
 
 	@Override
 	public int getUser_id(String email) throws ConnectionPoolException {
-		String SQL = "SELECT user_id FROM user WHERE email = ?";
 
 		int user_idSQL = 0;
 
@@ -297,7 +298,7 @@ public class SQLUserDAO implements UserDAO {
 		ConnectionPool pool = ConnectionPool.getInstance();
 		connection = pool.takeConnection();
 		try {
-			preparedStatement = connection.prepareStatement(SQL);
+			preparedStatement = connection.prepareStatement(GET_USER_ID);
 			preparedStatement.setString(1, email);
 			resultSet = preparedStatement.executeQuery();
 
@@ -335,7 +336,6 @@ public class SQLUserDAO implements UserDAO {
 
 	@Override
 	public ArrayList<User> getAllUser() throws ConnectionPoolException {
-		String SQL = "SELECT user_id, email, nickname, role FROM user";
 
 		int user_id;
 		String email;
@@ -350,7 +350,7 @@ public class SQLUserDAO implements UserDAO {
 		ConnectionPool pool = ConnectionPool.getInstance();
 		connection = pool.takeConnection();
 		try {
-			preparedStatement = connection.prepareStatement(SQL);
+			preparedStatement = connection.prepareStatement(GET_ALL_USER);
 			resultSet = preparedStatement.executeQuery();
 
 			while (resultSet.next()) {
